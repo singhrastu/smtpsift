@@ -2,6 +2,10 @@
 
 Turns SMTP rejections and deferrals into a category and an action.
 
+**[Run it in your browser](https://rastu.tech/bounce/)** &mdash; no install, nothing
+uploaded. The hosted version uses this exact ruleset, exported at build time so the two
+cannot disagree about what a response means.
+
 Most bounce handling splits responses into "hard" and "soft" and stops there. That
 split is too coarse to act on. A full mailbox, a rate limit, and a reputation block
 all arrive as soft bounces, and they need opposite responses:
@@ -112,10 +116,42 @@ evaluated in order. Add specific rules above general ones. If you set a provider
 the rule only fires when the provider matches or is unknown, so a Yahoo-specific
 pattern won't misfire on a Gmail response.
 
-## TODO
+## Planned
 
-- ARF / feedback loop report parsing
-- bulk mode reading Postfix and PowerMTA accounting files directly instead of grep
-- confidence score when more than one rule could match
+- ARF and feedback-loop report parsing
+- Bulk mode reading Postfix and PowerMTA accounting files directly
+- A confidence signal when more than one rule could match
+
+## Why the rules are regular expressions and not a model
+
+Nothing here is trained, and that is deliberate. This is an ordered list of patterns,
+first match wins, and every classification can be traced to the rule that produced it.
+A classifier you cannot explain is the wrong thing to put in front of a decision about
+whether to keep sending: when it is wrong, you need to know why before you can fix it,
+and "the model said so" is not an answer at three in the morning.
+
+Adding coverage means adding a rule and a test, not retraining anything.
+
+## Related
+
+- [SMTP response reference](https://rastu.tech/smtp/) &mdash; one page per response, what
+  it means, whether retrying helps, and what to change so it stops
+- [dmarcsight](https://github.com/singhrastu/dmarcsight) &mdash; the authentication half:
+  SPF, DKIM, DMARC, MTA-STS, TLS-RPT and BIMI for a domain
+
+## Author
+
+**Rastu Singh** &mdash; Infrastructure Engineer working on email platforms, deliverability
+and email security, in Tallinn, Estonia. Six MTAs in production across PowerMTA, KumoMTA,
+Momentum, Postfix, Haraka and GreenArrow, on estates running to over a thousand sending IPs
+and millions of messages a day.
+
+The rules in this repository come from those logs.
+
+[rastu.tech](https://rastu.tech) &middot;
+[LinkedIn](https://www.linkedin.com/in/rastu) &middot;
+[ORCID 0009-0002-0526-3005](https://orcid.org/0009-0002-0526-3005)
+
+## Licence
 
 MIT.
